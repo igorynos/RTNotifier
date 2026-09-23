@@ -1,0 +1,16 @@
+services:
+  notifier:
+    build: {context: .., dockerfile: Dockerfile}
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_ADDR: redis:6379
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID}
+      CHECK_INTERVAL: ${CHECK_INTERVAL:-15s}
+      NOTIFY_COOLDOWN: ${NOTIFY_COOLDOWN:-24h}
+    depends_on: [redis]
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes: ["redis_data:/data"]
+volumes: {redis_data: {}}

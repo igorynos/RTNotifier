@@ -14,10 +14,14 @@ type Trigger interface {
 type Sender interface {
 	Send(context.Context, string) error
 }
+type State interface {
+	Ready(context.Context, string, time.Duration) (bool, error)
+}
 
 type Runner struct {
 	Triggers []Trigger
 	Sender   Sender
+	State    State
 	Cooldown time.Duration
 	mu       sync.Mutex
 	last     map[string]time.Time
@@ -34,7 +38,18 @@ func (r *Runner) RunOnce(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("trigger %s: %w", trigger.Name(), err)
 		}
-		if !fired || !r.ready(trigger.Name()) {
+		if !fired {
+			continue
+		}
+		if r.State != nil {
+			ok, stateErr := r.State.Ready(ctx, trigger.Name(), r.Cooldown)
+			if stateErr != nil {
+				return fmt.Errorf("state %s: %w", trigger.Name(), stateErr)
+			}
+			if !ok {
+				continue
+			}
+		} else if !r.ready(trigger.Name()) {
 			continue
 		}
 		if err := r.Sender.Send(ctx, message); err != nil {
