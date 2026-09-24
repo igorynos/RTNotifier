@@ -2,7 +2,7 @@
 
 [![Go](https://img.shields.io/badge/Go-1.23-00ADD8?logo=go)](https://go.dev/) [![CI](https://github.com/igorynos/RTNotifier/actions/workflows/ci.yml/badge.svg)](https://github.com/igorynos/RTNotifier/actions/workflows/ci.yml)
 
-Production-style monitoring worker that analyzes payment-platform data and delivers actionable Telegram alerts. This is the Go successor to [RTNotifier-python](https://github.com/igorynos/RTNotifier-python).
+Production-style monitoring worker that analyzes payment-platform data and delivers actionable Telegram alerts.
 
 ## 🚨 Alert Scenarios
 
@@ -75,7 +75,3 @@ make test
 make lint
 make build
 ```
-
-## 🐍 Previous Implementation
-
-The original Python service remains available as [RTNotifier-python](https://github.com/igorynos/RTNotifier-python).
